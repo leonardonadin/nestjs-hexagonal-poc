@@ -1,8 +1,14 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { App } from "src/domain/app/app";
+import { Category } from "src/domain/category/category";
+import { City } from "src/domain/city/city";
+import { State } from "src/domain/state/state";
 import { Repository } from "typeorm";
 import { AppEntity } from "./entity/app.entity";
+import { CategoryEntity } from "./entity/category.entity";
+import { CityEntity } from "./entity/city.entity";
+import { StateEntity } from "./entity/state.entity";
 
 @Injectable()
 export default class AppRepositoryTypeORM {
@@ -35,8 +41,20 @@ export default class AppRepositoryTypeORM {
         app.name = appEntity.name;
         app.description = appEntity.description;
         app.icon = appEntity.icon;
-        app.category = appEntity.category;
-        app.cities = appEntity.cities;
+
+        app.category = new Category();
+        app.category.name = appEntity.category.name;
+        app.category.description = appEntity.category.description;
+
+        app.cities = appEntity.cities.map((cityEntity) => {
+            const city = new City();
+            city.name = cityEntity.name;
+            city.state = new State();
+            city.state.name = cityEntity.state.name;
+            city.state.abbreviation = cityEntity.state.abbreviation;
+            return city;
+        });
+
         return app;
     }
 
@@ -46,8 +64,20 @@ export default class AppRepositoryTypeORM {
         appEntity.name = app.name;
         appEntity.description = app.description;
         appEntity.icon = app.icon;
-        appEntity.category = app.category;
-        appEntity.cities = app.cities;
+
+        appEntity.category = new CategoryEntity();
+        appEntity.category.name = app.category.name;
+        appEntity.category.description = app.category.description;
+
+        appEntity.cities = app.cities.map((city) => {
+            const cityEntity = new CityEntity();
+            cityEntity.name = city.name;
+            cityEntity.state = new StateEntity();
+            cityEntity.state.name = city.state.name;
+            cityEntity.state.abbreviation = city.state.abbreviation;
+            return cityEntity;
+        });
+
         return appEntity;
     }
 }
