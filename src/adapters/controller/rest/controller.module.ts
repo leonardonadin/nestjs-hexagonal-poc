@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { AppController } from "./app/app.controller";
+import { CategoryController } from "./category/category.controller";
 import { ConfigServiceModule } from "./config/config-service.module";
 
 @Module({
@@ -7,7 +8,8 @@ import { ConfigServiceModule } from "./config/config-service.module";
         ConfigServiceModule.register()
     ],
     controllers: [
-        AppController
-    ]
+        AppController,
+        CategoryController
+    ],
 })
 export class ControllerModule {}

@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -10,26 +11,35 @@ import { CityEntity } from './city.entity';
 
 @Entity()
 export class AppEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   id: number;
 
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
   @Column()
   url: string;
 
-  @Column()
+  @Column({ nullable: true })
   icon: string;
 
   @ManyToMany((type) => CityEntity, (city) => city.apps, { eager: true })
+  @JoinTable({
+    name: 'app_city',
+    joinColumn: {
+      name: 'app_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'city_id',
+      referencedColumnName: 'id',
+    },
+  })
   cities: CityEntity[];
 
-  @ManyToOne((type) => CategoryEntity, (category) => category.apps, {
-    eager: true,
-  })
+  @ManyToOne((type) => CategoryEntity, (category) => category.apps)
   category: CategoryEntity;
 }

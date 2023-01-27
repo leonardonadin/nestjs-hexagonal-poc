@@ -37,46 +37,72 @@ export default class AppRepositoryTypeORM {
 
     private mapToApp(appEntity: AppEntity): App {
         const app: App = new App();
-        app.id = appEntity.id;
         app.name = appEntity.name;
         app.description = appEntity.description;
         app.icon = appEntity.icon;
+        app.url = appEntity.url;
 
-        app.category = new Category();
-        app.category.name = appEntity.category.name;
-        app.category.description = appEntity.category.description;
+        if (appEntity.category) {
+            const category: Category = new Category();
+            category.id = appEntity.category.id;
+            category.name = appEntity.category.name;
+            category.description = appEntity.category.description;
+            category.icon = appEntity.category.icon;
+            app.category = category;
+        }
 
-        app.cities = appEntity.cities.map((cityEntity) => {
-            const city = new City();
-            city.name = cityEntity.name;
-            city.state = new State();
-            city.state.name = cityEntity.state.name;
-            city.state.abbreviation = cityEntity.state.abbreviation;
-            return city;
-        });
+        if (appEntity.cities) {
+            const cityArray: City[] = appEntity.cities.map((cityEntity) => {
+                const city: City = new City();
+                city.id = cityEntity.id;
+                city.name = cityEntity.name;
+
+                const state: State = new State();
+                state.id = cityEntity.state.id;
+                state.name = cityEntity.state.name;
+                state.abbreviation = cityEntity.state.abbreviation;
+                city.state = state;
+
+                return city;
+            });
+            app.cities = cityArray;
+        }
 
         return app;
     }
 
     private mapToAppEntity(app: App): AppEntity {
         const appEntity: AppEntity = new AppEntity();
-        appEntity.id = app.id;
         appEntity.name = app.name;
         appEntity.description = app.description;
         appEntity.icon = app.icon;
+        appEntity.url = app.url;
 
-        appEntity.category = new CategoryEntity();
-        appEntity.category.name = app.category.name;
-        appEntity.category.description = app.category.description;
+        if (app.categoryId) {
+            const categoryEntity: CategoryEntity = new CategoryEntity();
+            categoryEntity.id = app.category.id;
+            categoryEntity.name = app.category.name;
+            categoryEntity.description = app.category.description;
+            categoryEntity.icon = app.category.icon;
+            appEntity.category = categoryEntity;
+        }
 
-        appEntity.cities = app.cities.map((city) => {
-            const cityEntity = new CityEntity();
-            cityEntity.name = city.name;
-            cityEntity.state = new StateEntity();
-            cityEntity.state.name = city.state.name;
-            cityEntity.state.abbreviation = city.state.abbreviation;
-            return cityEntity;
-        });
+        if (app.cities) {
+            const cityEntityArray: CityEntity[] = app.cities.map((city) => {
+                const cityEntity: CityEntity = new CityEntity();
+                cityEntity.id = city.id;
+                cityEntity.name = city.name;
+                
+                const stateEntity: StateEntity = new StateEntity();
+                stateEntity.id = city.state.id;
+                stateEntity.name = city.state.name;
+                stateEntity.abbreviation = city.state.abbreviation;
+                cityEntity.state = stateEntity;
+
+                return cityEntity;
+            });
+            appEntity.cities = cityEntityArray;
+        }
 
         return appEntity;
     }

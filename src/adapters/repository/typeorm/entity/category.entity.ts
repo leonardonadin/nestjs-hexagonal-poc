@@ -1,21 +1,20 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { AppEntity } from "./app.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { AppEntity } from './app.entity';
 
 @Entity()
 export class CategoryEntity {
+  @PrimaryGeneratedColumn('increment')
+  id: number;
 
-    @PrimaryGeneratedColumn()
-    id: number;
+  @Column()
+  name: string;
 
-    @Column()
-    name: string;
+  @Column({ nullable: true })
+  description: string;
 
-    @Column()
-    description: string;
+  @Column({ nullable: true })
+  icon: string;
 
-    @Column()
-    icon: string;
-
-    @OneToMany(type => AppEntity, app => app.category, { eager: true })
-    apps: AppEntity[];
+  @OneToMany((type) => AppEntity, (app) => app.category, { eager: true })
+  apps: AppEntity[];
 }
